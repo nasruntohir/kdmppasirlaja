@@ -1,0 +1,14 @@
+config/db.php
+config/app.php
+kspro.sql
+*.sql
+/backups/
+/export/
+/uploads/
+/node_modules/
+/vendor/
+API_DOKUMENTASI.md
+README.md
+/api/
+1.php
+index.php
