@@ -60,7 +60,7 @@ $company = setting_get('company_name', 'Koperasi Simpan Pinjam');
         <!-- Header -->
         <div class="login-header">
           <div class="login-logo">
-            <i class="bi bi-bank2"></i>
+            <img src="member/assets/image/LOGO_KOPDES PASIRLAJA.png" alt="Logo">
           </div>
           <h2><?php echo htmlspecialchars($app_name); ?></h2>
           <p><?php echo htmlspecialchars($company); ?></p>

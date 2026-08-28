@@ -9,7 +9,7 @@ $app_name = setting_get('app_name', 'KSP Harian');
   <div class="sidebar-brand">
     <div class="d-flex align-items-center gap-3">
       <div class="brand-icon">
-        <i class="bi bi-bank2"></i>
+        <img src="member/assets/image/LOGO_KOPDES PASIRLAJA.png" alt="Logo">
       </div>
       <div>
         <h5><?php echo htmlspecialchars($app_name); ?></h5>
