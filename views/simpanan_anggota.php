@@ -155,6 +155,48 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($ok) {
+      $tanggal_mutasi = $mutasi['tanggal'];
+      $tipe_mutasi = $mutasi['tipe'];
+
+      $prod = $conn->query("SELECT id FROM ksp_produk_simpanan WHERE tipe = '$jenis' ORDER BY id LIMIT 1");
+      $produk_id = $prod ? (int)($prod->fetch_assoc()['id'] ?? 0) : 0;
+
+      if ($produk_id > 0) {
+        $stmt = $conn->prepare("SELECT id FROM ksp_simpanan_tx
+          WHERE anggota_id = ? AND produk_id = ? AND tipe = ? AND nominal = ?
+            AND DATE(tanggal) = DATE(?)
+          ORDER BY id DESC LIMIT 1");
+        $stmt->bind_param('iisds', $anggota_id, $produk_id, $tipe_mutasi, $nominal, $tanggal_mutasi);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        $stmt->close();
+
+        if ($tx_row = $res->fetch_assoc()) {
+          $tx_id = (int)$tx_row['id'];
+          $stmt = $conn->prepare("DELETE FROM ksp_kas WHERE ref_table IN ('ksp_simpanan_tx','ksp_mutasi_simpanan') AND ref_id IN (?, ?)");
+          $stmt->bind_param('ii', $tx_id, $mutasi_id);
+          $ok = $stmt->execute();
+          $stmt->close();
+
+          if ($ok) {
+            $stmt = $conn->prepare("DELETE FROM ksp_simpanan_tx WHERE id = ?");
+            $stmt->bind_param('i', $tx_id);
+            $ok = $stmt->execute();
+            $stmt->close();
+          }
+        }
+      }
+
+      if ($ok) {
+        $stmt = $conn->prepare('DELETE FROM ksp_kas WHERE ref_table = ? AND ref_id = ?');
+        $ref_table = 'ksp_mutasi_simpanan';
+        $stmt->bind_param('si', $ref_table, $mutasi_id);
+        $ok = $stmt->execute();
+        $stmt->close();
+      }
+    }
+
+    if ($ok) {
       $stmt = $conn->prepare('DELETE FROM ksp_mutasi_simpanan WHERE id = ?');
       $stmt->bind_param('i', $mutasi_id);
       $ok = $stmt->execute();
@@ -162,19 +204,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($ok) {
-      $no_kas = gen_number('prefix_no_kas');
-      $jenis_kas = $mutasi['tipe'] === 'setor' ? 'keluar' : 'masuk';
-      $catatan = 'Pembatalan ' . ucfirst($mutasi['tipe']) . ' Simpanan ' . ucfirst($jenis);
-      $stmt = $conn->prepare("INSERT INTO ksp_kas (no_kas, tanggal, jenis, sumber, ref_table, ref_id, nominal, user_id, catatan) VALUES (?, CURDATE(), ?, 'simpanan', 'ksp_mutasi_simpanan', ?, ?, ?, ?)");
-      $uid = user()['id'];
-      $stmt->bind_param('ssidis', $no_kas, $jenis_kas, $mutasi_id, $nominal, $uid, $catatan);
-      $ok = $stmt->execute();
-      $stmt->close();
-    }
-
-    if ($ok) {
       $conn->commit();
-      alert('success', 'Transaksi simpanan berhasil dihapus dan kas dibatalkan.');
+      alert('success', 'Transaksi simpanan beserta riwayatnya berhasil dihapus.');
     } else {
       $conn->rollback();
       alert('danger', 'Gagal menghapus transaksi simpanan.');

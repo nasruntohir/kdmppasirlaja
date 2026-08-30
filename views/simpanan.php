@@ -143,28 +143,63 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
   // Setor dihapus = saldo dikurangi, tarik dihapus = saldo dikembalikan
   $delta = $mutasi['tipe'] === 'setor' ? -$nominal : $nominal;
 
-  $conn->begin_transaction();;
+  $conn->begin_transaction();
 
-  try{
+  try {
     $stmt = $conn->prepare("UPDATE ksp_simpanan_anggota SET $field = $field + ? WHERE anggota_id = ? ");
     $stmt->bind_param('di', $delta, $anggota_id);
     $stmt->execute();
+    $stmt->close();
 
-    $conn->query(" UPDATE ksp_mutasi_simpanan SET total_simpanan =
+    $conn->query(" UPDATE ksp_simpanan_anggota SET total_simpanan =
     COALESCE(simpanan_pokok, 0) +
-    COALESCE(simpanan_waajib, 0) +
+    COALESCE(simpanan_wajib, 0) +
     COALESCE(simpanan_sukarela, 0)
     WHERE anggota_id = $anggota_id ");
+
+    $tanggal_mutasi = $mutasi['tanggal'];
+    $tipe_mutasi = $mutasi['tipe'];
+
+    $prod = $conn->query("SELECT id FROM ksp_produk_simpanan WHERE tipe = '$jenis' ORDER BY id LIMIT 1");
+    $produk_id = $prod ? (int)($prod->fetch_assoc()['id'] ?? 0) : 0;
+
+    if ($produk_id > 0) {
+      // Hapus riwayat transaksi produk simpanan (ksp_simpanan_tx) yang terkait dgn mutasi ini.
+      // Cocokkan via anggota + produk + tipe + nominal + tanggal (dibuat bersamaan di Sistem A).
+      $stmt = $conn->prepare("SELECT id FROM ksp_simpanan_tx
+        WHERE anggota_id = ? AND produk_id = ? AND tipe = ? AND nominal = ?
+          AND DATE(tanggal) = DATE(?)
+        ORDER BY id DESC LIMIT 1");
+      $stmt->bind_param('iisds', $anggota_id, $produk_id, $tipe_mutasi, $nominal, $tanggal_mutasi);
+      $stmt->execute();
+      $res = $stmt->get_result();
+      $stmt->close();
+
+      if ($row = $res->fetch_assoc()) {
+        $tx_id = (int)$row['id'];
+        // Hapus baris kas yang menunjuk ke transaksi produk tsb
+        $stmt = $conn->prepare("DELETE FROM ksp_kas WHERE ref_table IN ('ksp_simpanan_tx','ksp_mutasi_simpanan') AND ref_id IN (?, ?)");
+        $stmt->bind_param('ii', $tx_id, $mutasi_id);
+        $stmt->execute();
+        $stmt->close();
+        // Hapus riwayat transaksi produk simpanan
+        $stmt = $conn->prepare("DELETE FROM ksp_simpanan_tx WHERE id = ?");
+        $stmt->bind_param('i', $tx_id);
+        $stmt->execute();
+        $stmt->close();
+      }
+    }
 
     $stmt = $conn->prepare("DELETE FROM ksp_mutasi_simpanan WHERE id = ?");
     $stmt->bind_param('i', $mutasi_id);
     $stmt->execute();
+    $stmt->close();
 
     $conn->commit();
-    alert('success', 'Transaksi simpanan berhasil dihapus.');
-  } catch(Throwable $e){
+    alert('success', 'Transaksi simpanan beserta riwayatnya berhasil dihapus.');
+  } catch (Throwable $e) {
     $conn->rollback();
-    alert('danger', 'Gagal menghapus transaksi simpanan.');
+    alert('danger', 'Gagal menghapus transaksi simpanan: ' . $conn->error);
   }
   header('Location: index.php?m=simpanan_anggota&id=' . $anggota_id);
   exit;

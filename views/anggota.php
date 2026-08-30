@@ -108,12 +108,27 @@ if ($_SERVER['REQUEST_METHOD']==='POST' && isset($_POST['action']) && $_POST['ac
   if ($has_pinjaman > 0) {
     alert('danger', 'Tidak bisa hapus anggota yang masih punya pinjaman.');
   } else {
-    $stmt = $conn->prepare("DELETE FROM ksp_anggota WHERE id=?");
-    $stmt->bind_param("i", $id);
-    if ($stmt->execute()) {
+    $conn->begin_transaction();
+    try {
+      // Hapus baris kas orphan yang menunjuk ke transaksi simpanan anggota tsb (sebelum baris referensinya dihapus)
+      $conn->query("DELETE FROM ksp_kas WHERE ref_table = 'ksp_simpanan_tx' AND ref_id IN (SELECT id FROM ksp_simpanan_tx WHERE anggota_id = $id)");
+      // Hapus data terkait yang punya FK NO ACTION ke ksp_anggota
+      $conn->query("DELETE FROM ksp_simpanan_tx WHERE anggota_id = $id");
+      $conn->query("DELETE FROM ksp_tagih_item WHERE anggota_id = $id");
+
+      // Tabel lain (blacklist, mutasi_simpanan, notifikasi, pengajuan_online, shu_anggota,
+      // simpanan_anggota) terhapus otomatis lewat ON DELETE CASCADE.
+
+      $stmt = $conn->prepare("DELETE FROM ksp_anggota WHERE id=?");
+      $stmt->bind_param("i", $id);
+      $stmt->execute();
+      $stmt->close();
+
+      $conn->commit();
       alert('success', 'Anggota dihapus.');
-    } else {
-      alert('danger', 'Gagal menghapus anggota.');
+    } catch (Throwable $e) {
+      $conn->rollback();
+      alert('danger', 'Gagal menghapus anggota: ' . $conn->error);
     }
   }
   header("Location: index.php?m=anggota"); exit;
