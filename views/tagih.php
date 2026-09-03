@@ -65,7 +65,7 @@ if ($kolektor_id > 0) {
     <div class='col-md-3'><label class='form-label'>Tanggal</label><input type='date' name='tanggal' class='form-control' value='<?php echo htmlspecialchars($tanggal); ?>'></div>
     <div class='col-md-4'><label class='form-label'>Kolektor</label><select name='kolektor_id' class='form-select' required>
       <option value=''>- pilih -</option>
-      <?php $kk = db()->query("SELECT id,kode,nama FROM ksp_kolektor WHERE aktif=1 ORDER BY nama"); while($x=$kk->fetch_assoc()): ?>
+      <?php $kk = db()->query("SELECT id,kode,nama FROM ksp_kolektor WHERE status='aktif' ORDER BY nama"); while($x=$kk->fetch_assoc()): ?>
       <option value='<?php echo $x['id']; ?>' <?php echo $kolektor_id==$x['id']?'selected':''; ?>><?php echo htmlspecialchars($x['nama'].' ('.$x['kode'].')'); ?></option>
       <?php endwhile; ?>
     </select></div>

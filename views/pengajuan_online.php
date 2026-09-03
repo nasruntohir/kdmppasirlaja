@@ -64,33 +64,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $no_pinjaman = gen_number('prefix_no_pinjaman');
       
       // Insert pinjaman
+      $bunga_tipe = 'flat'; // metode bunga flat; tipe angsuran ada di kolom tipe_angsuran
       $stmt = $conn->prepare("INSERT INTO ksp_pinjaman(no_pinjaman, anggota_id, produk_id, tanggal_realisasi, pokok, tenor_hari, bunga_tipe, bunga_persen, total_bunga, total_pinjaman, dana_diterima, angsuran_per_periode, tipe_angsuran, admin_biaya, created_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
       $produk_id = $produk ? $produk['id'] : 1;
-      $stmt->bind_param("siisisiiiiisiii", $no_pinjaman, $anggota_id, $produk_id, $tgl, $pokok, $tenor, $tipe, $bp, $total_bunga, $total_pinjaman, $dana_diterima, $angsuran_per_periode, $tipe, $admin, $uid);
+      $stmt->bind_param("siisiisiiiiisii", $no_pinjaman, $anggota_id, $produk_id, $tgl, $pokok, $tenor, $bunga_tipe, $bp, $total_bunga, $total_pinjaman, $dana_diterima, $angsuran_per_periode, $tipe, $admin, $uid);
       
       if ($stmt->execute()) {
         $pinjaman_id = $conn->insert_id;
         
         // Generate jadwal
-        if ($tipe == 'harian') {
-          for ($i=1; $i <= $tenor; $i++) {
-            $jatuh = date('Y-m-d', strtotime($tgl . " +".($i-1)." day"));
-            $pokok_per = round($pokok / $tenor);
-            $bunga_per = round($total_bunga / $tenor);
-            $total_per = $angsuran_per_periode;
-            $conn->query("INSERT INTO ksp_jadwal_angsuran(pinjaman_id, hari_ke, tanggal_jatuh_tempo, pokok_harian, bunga_harian, total_tagih) VALUES($pinjaman_id, $i, '$jatuh', $pokok_per, $bunga_per, $total_per)");
-          }
-        } elseif ($tipe == 'mingguan') {
-          for ($i=1; $i <= $tenor; $i++) {
-            $jatuh = date('Y-m-d', strtotime($tgl . " +".($i * 7 - 7)." day"));
-            $pokok_per = round($pokok / $tenor);
-            $bunga_per = round($total_bunga / $tenor);
-            $total_per = $angsuran_per_periode;
-            $conn->query("INSERT INTO ksp_jadwal_angsuran(pinjaman_id, hari_ke, tanggal_jatuh_tempo, pokok_harian, bunga_harian, total_tagih) VALUES($pinjaman_id, $i, '$jatuh', $pokok_per, $bunga_per, $total_per)");
-          }
-        } else {
-          $jatuh = date('Y-m-d', strtotime($tgl . " +$tenor day"));
+        if ($tipe == 'tempo') {
+          $jatuh = date('Y-m-d', strtotime($tgl . " +30 day"));
           $conn->query("INSERT INTO ksp_jadwal_angsuran(pinjaman_id, hari_ke, tanggal_jatuh_tempo, pokok_harian, bunga_harian, total_tagih) VALUES($pinjaman_id, 1, '$jatuh', $pokok, $total_bunga, $total_pinjaman)");
+        } else {
+          // Bulanan: 1 angsuran per bulan selama tenor bulan
+          for ($i=1; $i <= $tenor; $i++) {
+            $jatuh = date('Y-m-d', strtotime($tgl . " +" . $i . " month -1 month"));
+            $pokok_per = round($pokok / $tenor);
+            $bunga_per = round($total_bunga / $tenor);
+            $total_per = $angsuran_per_periode;
+            $conn->query("INSERT INTO ksp_jadwal_angsuran(pinjaman_id, hari_ke, tanggal_jatuh_tempo, pokok_harian, bunga_harian, total_tagih) VALUES($pinjaman_id, $i, '$jatuh', $pokok_per, $bunga_per, $total_per)");
+          }
         }
         
         // Update pengajuan

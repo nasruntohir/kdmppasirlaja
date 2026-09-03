@@ -209,21 +209,19 @@ $page = 'pengajuan';
         
         <div class="form-group">
           <label class="form-label">Tenor (Lama Pinjaman)</label>
-          <select name="tenor" class="form-select" required>
-            <option value="7">7 Hari</option>
-            <option value="14">14 Hari</option>
-            <option value="21">21 Hari</option>
-            <option value="30" selected>30 Hari</option>
-            <option value="60">60 Hari</option>
-            <option value="90">90 Hari</option>
+          <select name="tenor" id="tenor" class="form-select" required>
+            <option value="1" selected>1 Bulan</option>
+            <option value="3">3 Bulan</option>
+            <option value="6">6 Bulan</option>
+            <option value="9">9 Bulan</option>
+            <option value="12">1 Tahun</option>
           </select>
         </div>
         
         <div class="form-group">
           <label class="form-label">Tipe Angsuran</label>
-          <select name="tipe_angsuran" class="form-select" required>
-            <option value="harian">Harian</option>
-            <option value="mingguan">Mingguan</option>
+          <select name="tipe_angsuran" id="tipe_angsuran" class="form-select" required>
+            <option value="bulanan">Bulanan</option>
             <option value="tempo">Tempo (Bayar Sekaligus)</option>
           </select>
         </div>

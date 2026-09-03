@@ -64,11 +64,11 @@ $page = 'status';
             </div>
             <div>
               <div class="text-sm text-gray">Tenor</div>
-              <div class="fw-bold"><?php echo $p['tenor_diinginkan']; ?> Hari</div>
+              <div class="fw-bold"><?php echo $p['tenor_diinginkan']; ?> Bulan</div>
             </div>
             <div>
               <div class="text-sm text-gray">Tipe</div>
-              <div class="fw-bold"><?php echo ucfirst($p['tipe_angsuran']); ?></div>
+              <div class="fw-bold"><?php echo $p['tipe_angsuran'] == 'tempo' ? 'Tempo' : 'Bulanan'; ?></div>
             </div>
             <div>
               <div class="text-sm text-gray">Tujuan</div>

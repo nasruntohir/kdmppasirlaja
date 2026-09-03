@@ -737,6 +737,33 @@ body {
   padding-left: 44px;
 }
 
+/*============== PERSENTASE INPUT ============== */
+.persen-input-wrap{
+  position: relative;
+}
+.persen-input-wrap::after{
+  content: "%";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--black-400);
+  font-weight: 600;
+}
+.persen-input-wrap input{
+  padding-right: 25px !important;
+}
+input[type=number]::-webkit-outer-spin-button,
+input[type=number]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance:textfield;
+}
+
+
 /* ============== TABLES ============== */
 .table {
   margin: 0;

@@ -64,8 +64,7 @@ $products = $conn->query("SELECT * FROM ksp_produk_pinjaman ORDER BY nama");
         <div class="mb-3">
           <label class="form-label fw-bold">Tipe Angsuran</label>
           <select id="simTipe" class="form-select">
-            <option value="harian">Harian</option>
-            <option value="mingguan">Mingguan</option>
+            <option value="bulanan" selected>Bulanan</option>
             <option value="tempo">Tempo (Jatuh Tempo)</option>
           </select>
         </div>
@@ -154,8 +153,7 @@ function hitungSimulasi() {
   var danaDiterima = pokok - potonganTab - admin;
   
   var periode = tenor;
-  if (tipe == 'mingguan') periode = Math.ceil(tenor / 7);
-  else if (tipe == 'tempo') periode = 1;
+  if (tipe == 'tempo') periode = 1;
   
   var angsuranPer = Math.ceil(totalPinjaman / periode);
   
@@ -189,9 +187,8 @@ function hitungSimulasi() {
     sisa -= bayar;
     
     var tgl = new Date(today);
-    if (tipe == 'harian') tgl.setDate(today.getDate() + i);
-    else if (tipe == 'mingguan') tgl.setDate(today.getDate() + (i * 7));
-    else tgl.setDate(today.getDate() + tenor);
+    if (tipe == 'tempo') tgl.setMonth(today.getMonth() + tenor);
+    else tgl.setMonth(today.getMonth() + i);
     
     var tglStr = tgl.toISOString().split('T')[0];
     

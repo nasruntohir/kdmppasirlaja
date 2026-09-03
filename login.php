@@ -14,7 +14,7 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
     $error = 'Login gagal. Periksa username/password.';
   }
 }
-$app_name = setting_get('app_name', 'KSP Harian');
+$app_name = setting_get('app_name', 'KOPDES MERAH PUTIH PASIRLAJA');
 $company = setting_get('company_name', 'Koperasi Simpan Pinjam');
 ?><!doctype html>
 <html lang="id">
@@ -146,7 +146,7 @@ $company = setting_get('company_name', 'Koperasi Simpan Pinjam');
 
           <small class="text-muted">
             <i class="bi bi-info-circle me-1"></i>
-            Default: admin / admin
+            Version 0.1
           </small>
         </div>
 

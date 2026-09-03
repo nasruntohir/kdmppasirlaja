@@ -28,16 +28,16 @@ body {
 /* App Header */
 .app-bar {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
-  color: white;
-  padding: 20px;
-  padding-top: 50px;
+  color: rgb(252, 252, 252);
+  padding: 15px 20px;
+  padding-top: 35px;
   position: sticky;
   top: 0;
   z-index: 100;
 }
 .app-bar-simple {
-  padding: 15px 20px;
-  padding-top: 45px;
+  padding: 12px 20px;
+  padding-top: 35px;
 }
 .app-bar h1 { font-size: 20px; font-weight: 700; }
 .app-bar p { font-size: 13px; opacity: 0.9; }
@@ -77,9 +77,9 @@ body {
 /* Balance Card */
 .balance-card {
   background: linear-gradient(135deg, var(--primary), var(--secondary));
-  margin: -30px 20px 20px;
+  margin: -10px 20px 20px;
   border-radius: 20px;
-  padding: 25px;
+  padding: 18px 20px;
   color: white;
   box-shadow: 0 10px 30px rgba(99,102,241,0.3);
 }

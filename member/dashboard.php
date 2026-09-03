@@ -95,15 +95,15 @@ $page = 'home';
     <div class="balance-row">
       <div class="balance-item">
         <span>Total Pinjaman</span>
-        <strong>Rp <?php echo number_format($total_pinjaman/1000, 0); ?>rb</strong>
+        <strong>Rp <?php echo number_format($total_pinjaman, 0, ',', '.'); ?></strong>
       </div>
       <div class="balance-item">
         <span>Terbayar</span>
-        <strong>Rp <?php echo number_format($total_terbayar/1000, 0); ?>rb</strong>
+        <strong>Rp <?php echo number_format($total_terbayar, 0, ',', '.'); ?></strong>
       </div>
       <div class="balance-item">
         <span>Simpanan</span>
-        <strong>Rp <?php echo number_format($total_simpanan/1000, 0); ?>rb</strong>
+        <strong>Rp <?php echo number_format($total_simpanan, 0, ',', '.'); ?></strong>
       </div>
     </div>
   </div>

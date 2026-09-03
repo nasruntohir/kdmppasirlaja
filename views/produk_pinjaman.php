@@ -99,8 +99,7 @@ $list = $conn->query("SELECT * FROM ksp_produk_pinjaman ORDER BY id DESC");
           <div class="col-md-2">
             <label class="form-label">Tipe Angsuran</label>
             <select name="bunga_tipe" class="form-select">
-              <option value="harian" selected>Harian</option>
-              <option value="mingguan">Mingguan</option>
+              <option value="bulanan" selected>Bulanan</option>
               <option value="tempo">Tempo/Jatuh Tempo</option>
             </select>
           </div>
@@ -121,8 +120,8 @@ $list = $conn->query("SELECT * FROM ksp_produk_pinjaman ORDER BY id DESC");
         <thead><tr><th>#</th><th>Kode</th><th>Nama</th><th>Tipe</th><th>Jenis</th><th>Pelunasan</th><th>Angsuran</th><th>Bunga</th><th>Aksi</th></tr></thead>
         <tbody>
         <?php $no=1; while($r=$list->fetch_assoc()): 
-          $tipe_angsuran = $r['bunga_tipe'] == 'harian' ? 'Harian' : ($r['bunga_tipe'] == 'mingguan' ? 'Mingguan' : ($r['bunga_tipe'] == 'tempo' ? 'Tempo' : ucfirst($r['bunga_tipe'])));
-          $tenor_label = $r['bunga_tipe'] == 'mingguan' ? $r['tenor_hari_default'].' minggu' : ($r['bunga_tipe'] == 'tempo' ? '-' : $r['tenor_hari_default'].' hari');
+          $tipe_angsuran = $r['bunga_tipe'] == 'tempo' ? 'Tempo' : 'Bulanan';
+          $tenor_label = ($r['bunga_tipe'] == 'tempo' ? '-' : (int)$r['tenor_hari_default'].' bulan');
           $pot_tab = isset($r['potongan_tabungan']) ? $r['potongan_tabungan'] : 0;
           $tipe_pinjaman = $r['tipe_pinjaman'] ?? 'uang';
           $jenis_peminjam = $r['jenis_peminjam'] ?? 'perorangan';
@@ -186,7 +185,7 @@ $list = $conn->query("SELECT * FROM ksp_produk_pinjaman ORDER BY id DESC");
                         <hr>
                         <div class="row g-3">
                           <div class="col-md-4"><label class="form-label">Tenor Default</label><input name="tenor_hari_default" type="number" class="form-control" value="<?php echo $r['tenor_hari_default']; ?>"></div>
-                          <div class="col-md-4"><label class="form-label">Tipe Angsuran</label><select name="bunga_tipe" class="form-select"><option value="harian" <?php echo $r['bunga_tipe']=='harian'?'selected':''; ?>>Harian</option><option value="mingguan" <?php echo $r['bunga_tipe']=='mingguan'?'selected':''; ?>>Mingguan</option><option value="tempo" <?php echo $r['bunga_tipe']=='tempo'?'selected':''; ?>>Tempo</option></select></div>
+                          <div class="col-md-4"><label class="form-label">Tipe Angsuran</label><select name="bunga_tipe" class="form-select"><option value="bulanan" <?php echo $r['bunga_tipe']=='bulanan'?'selected':''; ?>>Bulanan</option><option value="tempo" <?php echo $r['bunga_tipe']=='tempo'?'selected':''; ?>>Tempo</option></select></div>
                           <div class="col-md-4"><label class="form-label">Bunga (%)</label><input name="bunga_persen" type="number" step="1" class="form-control" value="<?php echo (int)$r['bunga_persen']; ?>"></div>
                           <div class="col-md-4"><label class="form-label">Pot. Tabungan (%)</label><input name="potongan_tabungan" type="number" step="1" class="form-control" value="<?php echo $pot_tab; ?>"></div>
                           <div class="col-md-4"><label class="form-label">Biaya Admin (Rp)</label><input name="admin_biaya" type="number" step="1000" class="form-control" value="<?php echo (int)$r['admin_biaya']; ?>"></div>

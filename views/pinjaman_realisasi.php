@@ -105,42 +105,31 @@ if ($_SERVER['REQUEST_METHOD']==='POST') {
   // Insert pinjaman dengan kolom baru
   $stmt = $conn->prepare("INSERT INTO ksp_pinjaman(no_pinjaman, anggota_id, produk_id, tanggal_realisasi, pokok, tenor_hari, bunga_tipe, bunga_persen, total_bunga, total_pinjaman, potongan_tabungan, dana_diterima, angsuran_per_periode, tipe_angsuran, tanggal_jatuh_tempo, admin_biaya, created_by) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)");
   $uid = user()['id'];
-  $bunga_tipe = $tipe_angsuran; // Tipe bunga (flat) — sesuaikan jika ada opsi lain
-  $stmt->bind_param("siisdisidddddssidi", $no_pinjaman, $anggota_id, $produk_id, $tgl, $pokok, $tenor, $bunga_tipe, $bp, $total_bunga, $total_pinjaman, $potongan_tabungan, $dana_diterima, $angsuran_per_periode, $tipe_angsuran, $tgl_jatuh_tempo, $admin, $uid);
+  $bunga_tipe = 'flat'; // metode bunga (enum flat/menurun); tipe angsuran ada di kolom tipe_angsuran
+  $stmt->bind_param("siisdisidddddssii", $no_pinjaman, $anggota_id, $produk_id, $tgl, $pokok, $tenor, $bunga_tipe, $bp, $total_bunga, $total_pinjaman, $potongan_tabungan, $dana_diterima, $angsuran_per_periode, $tipe_angsuran, $tgl_jatuh_tempo, $admin, $uid);
   
   if ($stmt->execute()) {
     $pinjaman_id = $conn->insert_id;
     
     // Generate jadwal angsuran
-    if ($tipe_angsuran == 'harian') {
-      // Jadwal harian
-      for ($i=1; $i <= $tenor; $i++) {
-        $jatuh = date('Y-m-d', strtotime($tgl . " +".($i-1)." day"));
-        $stmt2 = $conn->prepare("INSERT INTO ksp_jadwal_angsuran(pinjaman_id, hari_ke, tanggal_jatuh_tempo, pokok_harian, bunga_harian, total_tagih) VALUES(?,?,?,?,?,?)");
-        $pokok_per = round($pokok / $tenor);
-        $bunga_per = round($total_bunga / $tenor);
-        $total_per = $angsuran_per_periode;
-        $stmt2->bind_param("iisddd", $pinjaman_id, $i, $jatuh, $pokok_per, $bunga_per, $total_per);
-        $stmt2->execute();
-      }
-    } elseif ($tipe_angsuran == 'mingguan') {
-      // Jadwal mingguan
-      for ($i=1; $i <= $tenor; $i++) {
-        $jatuh = date('Y-m-d', strtotime($tgl . " +".($i * 7 - 7)." day")); // Setiap 7 hari
-        $stmt2 = $conn->prepare("INSERT INTO ksp_jadwal_angsuran(pinjaman_id, hari_ke, tanggal_jatuh_tempo, pokok_harian, bunga_harian, total_tagih) VALUES(?,?,?,?,?,?)");
-        $pokok_per = round($pokok / $tenor);
-        $bunga_per = round($total_bunga / $tenor);
-        $total_per = $angsuran_per_periode;
-        $stmt2->bind_param("iisddd", $pinjaman_id, $i, $jatuh, $pokok_per, $bunga_per, $total_per);
-        $stmt2->execute();
-      }
-    } elseif ($tipe_angsuran == 'tempo') {
+    if ($tipe_angsuran == 'tempo') {
       // Jadwal tempo - 1 kali bayar di tanggal jatuh tempo
-      $jatuh = $tgl_jatuh_tempo ? $tgl_jatuh_tempo : date('Y-m-d', strtotime($tgl . " +30 day"));
+      $jatuh = $tgl_jatuh_tempo ? $tgl_jatuh_tempo : date('Y-m-d', strtotime($tgl . " +1 month"));
       $stmt2 = $conn->prepare("INSERT INTO ksp_jadwal_angsuran(pinjaman_id, hari_ke, tanggal_jatuh_tempo, pokok_harian, bunga_harian, total_tagih) VALUES(?,?,?,?,?,?)");
       $i = 1;
       $stmt2->bind_param("iisddd", $pinjaman_id, $i, $jatuh, $pokok, $total_bunga, $total_pinjaman);
       $stmt2->execute();
+    } else {
+      // Jadwal bulanan - 1 angsuran per bulan selama tenor bulan
+      for ($i=1; $i <= $tenor; $i++) {
+        $jatuh = date('Y-m-d', strtotime($tgl . " +" . $i . " month -1 month"));
+        $stmt2 = $conn->prepare("INSERT INTO ksp_jadwal_angsuran(pinjaman_id, hari_ke, tanggal_jatuh_tempo, pokok_harian, bunga_harian, total_tagih) VALUES(?,?,?,?,?,?)");
+        $pokok_per = round($pokok / $tenor);
+        $bunga_per = round($total_bunga / $tenor);
+        $total_per = $angsuran_per_periode;
+        $stmt2->bind_param("iisddd", $pinjaman_id, $i, $jatuh, $pokok_per, $bunga_per, $total_per);
+        $stmt2->execute();
+      }
     }
     
     // === INTEGRASI: Potongan tabungan masuk ke simpanan wajib ===
@@ -227,12 +216,11 @@ $produk = $conn->query("SELECT * FROM ksp_produk_pinjaman ORDER BY id DESC");
         <div class="col-md-2">
           <label class="form-label">Tipe Angsuran</label>
           <select name="tipe_angsuran" id="tipe_angsuran" class="form-select">
-            <option value="harian">Harian</option>
-            <option value="mingguan">Mingguan</option>
-            <option value="tempo">Tempo (Jatuh Tempo)</option>
+            <option value="bulanan" selected>Bulanan</option>
+            <option value="tempo">Tempo (Bayar Langsung)</option>
           </select>
         </div>
-        <div class="col-md-2" id="tenorDiv"><label class="form-label" id="tenorLabel">Tenor (hari)</label><input type="number" id="tenor" name="tenor" class="form-control" value="24"></div>
+        <div class="col-md-2" id="tenorDiv"><label class="form-label" id="tenorLabel">Tenor (bulan)</label><input type="number" id="tenor" name="tenor" class="form-control" value="3"></div>
         <div class="col-md-2" id="jatuhTempoDiv" style="display:none;"><label class="form-label">Tgl Jatuh Tempo</label><input type="date" id="tanggal_jatuh_tempo" name="tanggal_jatuh_tempo" class="form-control" value="<?php echo date('Y-m-d', strtotime('+30 days')); ?>"></div>
         <div class="col-md-2"><label class="form-label">Bunga (%)</label><input type="number" step="1" id="bunga_persen" name="bunga_persen" class="form-control" value="20" required></div>
         <div class="col-md-2"><label class="form-label">Pot. Tabungan (%)</label><input type="number" step="1" id="potongan_tabungan" name="potongan_tabungan" class="form-control" value="5"></div>
@@ -289,7 +277,7 @@ function hitungSimulasi() {
   document.getElementById('simAngsuran').textContent = formatRp(angsuran);
   document.getElementById('simTenor').textContent = tipe == 'tempo' ? '1' : tenor;
   
-  var satuan = tipe == 'harian' ? 'hari' : (tipe == 'mingguan' ? 'minggu' : 'kali');
+  var satuan = tipe == 'tempo' ? 'kali' : 'bulan';
   document.getElementById('simPeriodeLabel').textContent = satuan;
   document.getElementById('simPeriodeSatuan').textContent = satuan;
 }
@@ -298,7 +286,7 @@ document.getElementById('produk_id').addEventListener('change', function(){
   var opt = this.options[this.selectedIndex];
   if (opt.value) {
     document.getElementById('tenor').value = opt.getAttribute('data-tenor');
-    document.getElementById('tipe_angsuran').value = opt.getAttribute('data-tipe') || 'harian';
+    document.getElementById('tipe_angsuran').value = opt.getAttribute('data-tipe') || 'bulanan';
     document.getElementById('bunga_persen').value = opt.getAttribute('data-bunga');
     document.getElementById('potongan_tabungan').value = opt.getAttribute('data-pottab') || 0;
     document.getElementById('admin_biaya').value = opt.getAttribute('data-admin');
@@ -324,7 +312,7 @@ function updateTipeAngsuran() {
   } else {
     tenorDiv.style.display = 'block';
     jatuhTempoDiv.style.display = 'none';
-    tenorLabel.textContent = tipe == 'mingguan' ? 'Tenor (minggu)' : 'Tenor (hari)';
+    tenorLabel.textContent = 'Tenor (bulan)';
   }
   hitungSimulasi();
 }

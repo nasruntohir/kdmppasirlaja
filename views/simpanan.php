@@ -142,7 +142,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST'
 
   // Setor dihapus = saldo dikurangi, tarik dihapus = saldo dikembalikan
   $delta = $mutasi['tipe'] === 'setor' ? -$nominal : $nominal;
-
   $conn->begin_transaction();
 
   try {

@@ -158,8 +158,8 @@ if (isset($_GET['no'])) {
 </div>
 
 <?php if ($pinjaman && $loan_stats): 
-  $tipe_angsuran = isset($pinjaman['tipe_angsuran']) ? $pinjaman['tipe_angsuran'] : 'harian';
-  $satuan = $tipe_angsuran == 'harian' ? 'hari' : ($tipe_angsuran == 'mingguan' ? 'minggu' : 'kali');
+  $tipe_angsuran = isset($pinjaman['tipe_angsuran']) ? $pinjaman['tipe_angsuran'] : 'bulanan';
+  $satuan = $tipe_angsuran == 'tempo' ? 'kali' : 'bulan';
 ?>
 <!-- Info Pinjaman Lengkap -->
 <div class="card card-widget mb-3">

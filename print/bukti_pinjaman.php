@@ -94,7 +94,7 @@ $total_bunga = $pinjaman['total_bunga'] ?: ($pinjaman['pokok'] * $pinjaman['bung
     <?php endif; ?>
     <tr><td>Dana Diterima</td><td><strong>Rp <?php echo number_format($pinjaman['dana_diterima'] ?: ($pinjaman['pokok'] - $pinjaman['admin_biaya']),0,',','.'); ?></strong></td></tr>
     <tr><td>Tenor</td><td><?php echo $pinjaman['tenor_hari']; ?> hari</td></tr>
-    <tr><td>Tipe Angsuran</td><td><?php echo ucfirst($pinjaman['tipe_angsuran'] ?? 'harian'); ?></td></tr>
+    <tr><td>Tipe Angsuran</td><td><?php echo $pinjaman['tipe_angsuran'] == 'tempo' ? 'Tempo' : 'Bulanan'; ?></td></tr>
     <tr><td>Angsuran per Periode</td><td>Rp <?php echo number_format($pinjaman['angsuran_per_periode'] ?: ($total_pinjaman / $pinjaman['tenor_hari']),0,',','.'); ?></td></tr>
   </table>
 
