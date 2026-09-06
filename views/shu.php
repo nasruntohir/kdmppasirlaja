@@ -166,7 +166,7 @@ if ($shu) {
     <div class="card card-widget bg-success bg-opacity-10">
       <div class="card-body text-center">
         <i class="bi bi-graph-up-arrow fs-2 text-success"></i>
-        <h5 class="mt-2 mb-0">Rp <?php echo number_format($shu['total_pendapatan'], 0, ',', '.'); ?></h5>
+        <h5 class="mt-2 mb-0">Rp <?php echo number_format($shu['total_pendapatan'], 2, ',', '.'); ?></h5>
         <small class="text-muted">Total Pendapatan</small>
       </div>
     </div>
@@ -175,7 +175,7 @@ if ($shu) {
     <div class="card card-widget bg-danger bg-opacity-10">
       <div class="card-body text-center">
         <i class="bi bi-graph-down-arrow fs-2 text-danger"></i>
-        <h5 class="mt-2 mb-0">Rp <?php echo number_format($shu['total_biaya'], 0, ',', '.'); ?></h5>
+        <h5 class="mt-2 mb-0">Rp <?php echo number_format($shu['total_biaya'], 2, ',', '.'); ?></h5>
         <small class="text-muted">Total Biaya</small>
       </div>
     </div>
@@ -184,7 +184,7 @@ if ($shu) {
     <div class="card card-widget bg-primary bg-opacity-10">
       <div class="card-body text-center">
         <i class="bi bi-cash-stack fs-2 text-primary"></i>
-        <h5 class="mt-2 mb-0">Rp <?php echo number_format($shu['shu_kotor'], 0, ',', '.'); ?></h5>
+        <h5 class="mt-2 mb-0">Rp <?php echo number_format($shu['shu_kotor'], 2, ',', '.'); ?></h5>
         <small class="text-muted">SHU Kotor</small>
         <span class="badge bg-<?php echo $shu['status'] == 'final' ? 'success' : 'warning'; ?> ms-2"><?php echo strtoupper($shu['status']); ?></span>
       </div>
@@ -217,7 +217,7 @@ if ($shu) {
           <div class="mb-2">
             <div class="d-flex justify-content-between align-items-center">
               <label class="form-label mb-0"><?php echo $item[1]; ?></label>
-              <span class="text-<?php echo $item[2]; ?> fw-bold">Rp <?php echo number_format($nilai, 0, ',', '.'); ?></span>
+              <span class="text-<?php echo $item[2]; ?> fw-bold">Rp <?php echo number_format($nilai, 2, ',', '.'); ?></span>
             </div>
             <div class="input-group input-group-sm">
               <input type="number" name="<?php echo $item[0]; ?>" class="form-control" value="<?php echo $shu[$item[0]]; ?>" step="0.01" min="0" max="100" <?php echo $shu['status'] == 'final' ? 'readonly' : ''; ?>>
@@ -270,9 +270,9 @@ if ($shu) {
                   <strong><?php echo htmlspecialchars($d['nama']); ?></strong><br>
                   <small class="text-muted"><?php echo $d['no_anggota']; ?></small>
                 </td>
-                <td class="text-end">Rp <?php echo number_format($d['jasa_simpanan'], 0, ',', '.'); ?></td>
-                <td class="text-end">Rp <?php echo number_format($d['jasa_pinjaman'], 0, ',', '.'); ?></td>
-                <td class="text-end fw-bold">Rp <?php echo number_format($d['total_shu'], 0, ',', '.'); ?></td>
+                <td class="text-end">Rp <?php echo number_format($d['jasa_simpanan'], 2, ',', '.'); ?></td>
+                <td class="text-end">Rp <?php echo number_format($d['jasa_pinjaman'], 2, ',', '.'); ?></td>
+                <td class="text-end fw-bold">Rp <?php echo number_format($d['total_shu'], 2, ',', '.'); ?></td>
                 <td>
                   <span class="badge bg-<?php echo $d['status'] == 'dibayar' ? 'success' : 'warning'; ?>">
                     <?php echo $d['status']; ?>

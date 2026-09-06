@@ -69,6 +69,9 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
   
   <!-- Custom CSS -->
   <link href="public/css/app.css" rel="stylesheet">
+
+   <!-- Custom JS -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 </head>
 <body>
 <!-- Sidebar -->
@@ -106,11 +109,44 @@ $page_title = isset($page_titles[$current_page]) ? $page_titles[$current_page] :
       </button>
       
       <!-- Notifications -->
-      <button class="navbar-icon-btn" title="Notifikasi">
-        <i class="bi bi-bell"></i>
-        <span class="badge">3</span>
-      </button>
+      <div class="notification-wrapper">
+        <button class="navbar-icon-btn" id="notificationBtn" title="Notifikasi">
+          <i class="bi bi-bell"></i>
+          <span class="badge" id="notif-count">0</span>
+        </button>
+
+        <!-- Dropdown Notifications -->
+        <div class="notification-dropdown" id="notificationDropdown">
+          <div class="notification-header">
+            <strong>
+              <i class="bi bi-bell"></i>
+              Notifikasi
+            </strong>
+          </div>
+          <div class="notif-content" id="notif-content">
+              <div class="no-notification">
+                Tidak ada notifikasi baru
+              </div>
+          </div>
+        </div>
+      </div>
       
+      <!-- POPUP Notifikasi --> 
+       <div id="loan-popup" class="loan-popup">
+
+          <div class="loan-popup-header">
+            <div class="popup-title">
+                <i class="bi bi-bell-fill"></i>
+                <strong>Pengajuan Pinjaman Baru</strong>
+            </div>
+            <button type="button" class="popup-close" id="popup-close">
+              <i class="bi bi-x-lg"></i>
+            </button>
+          </div>
+
+          <div class="loan-popup-body" id="loan-popup-content">Ada pengajuan pinjaman baru.</div>
+          <a href="index.php?m=pengajuan_online&status=pending" class="popup-button"> Lihat Pengajuan</a>
+       </div>
       <!-- Fullscreen -->
       <button class="navbar-icon-btn d-none d-md-flex" onclick="toggleFullscreen()" title="Fullscreen">
         <i class="bi bi-arrows-fullscreen"></i>

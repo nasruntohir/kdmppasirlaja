@@ -100,6 +100,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit_pengajuan'])) 
       
       if ($stmt->execute()) {
         log_activity('pengajuan_online', 'pengajuan', 'Pengajuan pinjaman online: ' . $no_pengajuan . ' dari ' . $member['nama']);
+
+        // Notifikasi untuk admin (status pending)
+        $nama_anggota = $conn->real_escape_string($member['nama']);
+        $conn->query("INSERT INTO ksp_notifikasi (anggota_id, judul, pesan, tipe, link) VALUES ($member_id, 'Pengajuan Baru', 'Anggota $nama_anggota mengajukan pinjaman sebesar Rp " . number_format($jumlah, 0, ',', '.') . " ($no_pengajuan)', 'info', 'index.php?m=pengajuan_online')");
+
         $success = true;
       } else {
         $error = 'Gagal menyimpan pengajuan.';

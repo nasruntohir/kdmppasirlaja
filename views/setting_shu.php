@@ -52,37 +52,37 @@ $total_shu_anggota = ($settings['jasa_modal']['persen'] ?? 0) + ($settings['jasa
             <tbody>
               <tr>
                 <td><i class="bi bi-piggy-bank me-2"></i>Cadangan (Laba Ditahan)</td>
-                <td><div class="persen-input-wrap"><input type="number" name="setting[cadangan]"class="form-control text-end persen-utama" value="<?php echo round($settings['cadangan']['persen']); ?>" step="0.01" min="0" max="100"></div></td>
+                <td><div class="persen-input-wrap"><input type="number" name="setting[cadangan]"class="form-control text-end persen-utama" value="<?php echo $settings['cadangan']['persen']; ?>" step="0.01" min="0" max="100"></div></td>
               </tr>
               <tr class="table-success">
                 <td><i class="bi bi-people me-2"></i><strong>SHU Anggota</strong></td>
-                 <td><div class="persen-input-wrap"><input type="number" name="setting[shu_anggota]"class="form-control text-end persen-utama" value="<?php echo  round($settings['shu_anggota']['persen']); ?>" step="0.01" min="0" max="100"></div></td>
+                 <td><div class="persen-input-wrap"><input type="number" name="setting[shu_anggota]"class="form-control text-end persen-utama" value="<?php echo  $settings['shu_anggota']['persen']; ?>" step="0.01" min="0" max="100"></div></td>
               </tr>
               <tr>
                 <td><i class="bi bi-person-badge me-2"></i>Jasa Pengurus</td>
-                 <td><div class="persen-input-wrap"><input type="number" name="setting[jasa_pengurus]"class="form-control text-end persen-utama" value="<?php echo  round($settings['jasa_pengurus']['persen']); ?>" step="0.01" min="0" max="100"></div></td>
+                 <td><div class="persen-input-wrap"><input type="number" name="setting[jasa_pengurus]"class="form-control text-end persen-utama" value="<?php echo $settings['jasa_pengurus']['persen']; ?>" step="0.01" min="0" max="100"></div></td>
               </tr>
               <tr>
                 <td><i class="bi bi-eye me-2"></i>Jasa Pengawas</td>
-                <td><div class="persen-input-wrap"><input type="number" name="setting[jasa_pengawas]"class="form-control text-end persen-utama" value="<?php echo round($settings['jasa_pengawas']['persen']); ?>" step="0.01" min="0" max="100"></div></td>
+                <td><div class="persen-input-wrap"><input type="number" name="setting[jasa_pengawas]"class="form-control text-end persen-utama" value="<?php echo $settings['jasa_pengawas']['persen']; ?>" step="0.01" min="0" max="100"></div></td>
               </tr>
               <tr>
                 <td><i class="bi bi-book me-2"></i>Dana Pendidikan</td>
-                 <td><div class="persen-input-wrap"><input type="number" name="setting[dana_pendidikan]"class="form-control text-end persen-utama" value="<?php echo round($settings['dana_pendidikan']['persen']); ?>" step="0.01" min="0" max="100"></div></td>
+                 <td><div class="persen-input-wrap"><input type="number" name="setting[dana_pendidikan]"class="form-control text-end persen-utama" value="<?php echo $settings['dana_pendidikan']['persen']; ?>" step="0.01" min="0" max="100"></div></td>
               </tr>
               <tr>
                 <td><i class="bi bi-heart me-2"></i>Dana Sosial</td>
-                 <td><div class="persen-input-wrap"><input type="number" name="setting[dana_sosial]"class="form-control text-end persen-utama" value="<?php echo round($settings['dana_sosial']['persen']); ?>" step="0.01" min="0" max="100"></div></td>
+                 <td><div class="persen-input-wrap"><input type="number" name="setting[dana_sosial]"class="form-control text-end persen-utama" value="<?php echo $settings['dana_sosial']['persen']; ?>" step="0.01" min="0" max="100"></div></td>
               </tr>
               <tr>
                 <td><i class="bi bi-graph-up-arrow me-2"></i>Dana Pengembangan Usaha</td>
-                <td><div class="persen-input-wrap"><input type="number" name="setting[dana_pengembangan]" class="form-control text-end persen-utama" value="<?php echo round($settings['dana_pengembangan']['persen']); ?>" step="0.01" min="0" max="100"></div></td>
+                <td><div class="persen-input-wrap"><input type="number" name="setting[dana_pengembangan]" class="form-control text-end persen-utama" value="<?php echo $settings['dana_pengembangan']['persen']; ?>" step="0.01" min="0" max="100"></div></td>
               </tr>
             </tbody>
             <tfoot>
               <tr class="table-dark">
                 <th>Total</th>
-                <th class="text-end"><span id="totalUtama"><?php echo (int)round($total_utama); ?></span>%</th>
+                <th class="text-end"><span id="totalUtama"><?php echo number_format($total_utama,2); ?></span>%</th>
               </tr>
             </tfoot>
           </table>
@@ -108,20 +108,20 @@ $total_shu_anggota = ($settings['jasa_modal']['persen'] ?? 0) + ($settings['jasa
                   <i class="bi bi-coin me-2"></i><strong>Jasa Modal</strong><br>
                   <small class="text-muted">Berdasarkan simpanan pokok + wajib anggota</small>
                 </td>
-                <td><div class="persen-input-wrap"><input type="number" name="setting[jasa_modal]" class="form-control text-end persen-anggota" value="<?php echo round($settings['jasa_modal']['persen']); ?>" step="1" min="0" max="100"></div></td>
+                <td><div class="persen-input-wrap"><input type="number" name="setting[jasa_modal]" class="form-control text-end persen-anggota" value="<?php echo $settings['jasa_modal']['persen']; ?>" step="1" min="0" max="100"></div></td>
               </tr>
               <tr>
                 <td>
                   <i class="bi bi-cart me-2"></i><strong>Jasa Usaha</strong><br>
                   <small class="text-muted">Berdasarkan transaksi pinjaman + penjualan</small>
                 </td>
-                <td><div class="persen-input-wrap"><input type="number" name="setting[jasa_usaha]" class="form-control text-end persen-anggota" value="<?php echo round($settings['jasa_usaha']['persen']); ?>" step="1" min="0" max="100"></div></td>
+                <td><div class="persen-input-wrap"><input type="number" name="setting[jasa_usaha]" class="form-control text-end persen-anggota" value="<?php echo $settings['jasa_usaha']['persen']; ?>" step="1" min="0" max="100"></div></td>
               </tr>
             </tbody>
             <tfoot>
               <tr class="table-dark">
                 <th>Total</th>
-                <th class="text-end"><span id="totalAnggota"><?php echo (int)round($total_shu_anggota); ?></span>%</th>
+                <th class="text-end"><span id="totalAnggota"><?php echo number_format($total_shu_anggota,2); ?></span>%</th>
               </tr>
             </tfoot>
           </table>
@@ -138,14 +138,14 @@ $total_shu_anggota = ($settings['jasa_modal']['persen'] ?? 0) + ($settings['jasa
         <div class="card-body">
           <p class="mb-2"><strong>Misal Laba = Rp 100.000.000</strong></p>
           <ul class="mb-0">
-            <li>Cadangan: <?php echo round($settings['cadangan']['persen']); ?>% = Rp <?php echo rupiah(100000000 * $settings['cadangan']['persen'] / 100); ?></li>
-            <li>SHU Anggota: <?php echo round($settings['shu_anggota']['persen']); ?>% = Rp <?php echo rupiah(100000000 * $settings['shu_anggota']['persen'] / 100); ?>
+            <li>Cadangan: <?php $settings['cadangan']['persen']; ?>% = Rp <?php echo rupiah(100000000 * $settings['cadangan']['persen'] / 100); ?></li>
+            <li>SHU Anggota: <?php echo $settings['shu_anggota']['persen']; ?>% = Rp <?php echo rupiah(100000000 * $settings['shu_anggota']['persen'] / 100); ?>
               <ul>
-                <li>Jasa Modal: <?php echo round($settings['jasa_modal']['persen']); ?>% = Rp <?php echo rupiah(100000000 * $settings['shu_anggota']['persen'] / 100 * $settings['jasa_modal']['persen'] / 100); ?></li>
-                <li>Jasa Usaha: <?php echo round($settings['jasa_usaha']['persen']); ?>% = Rp <?php echo rupiah(100000000 * $settings['shu_anggota']['persen'] / 100 * $settings['jasa_usaha']['persen'] / 100); ?></li>
+                <li>Jasa Modal: <?php echo $settings['jasa_modal']['persen']; ?>% = Rp <?php echo rupiah(100000000 * $settings['shu_anggota']['persen'] / 100 * $settings['jasa_modal']['persen'] / 100); ?></li>
+                <li>Jasa Usaha: <?php echo $settings['jasa_usaha']['persen']; ?>% = Rp <?php echo rupiah(100000000 * $settings['shu_anggota']['persen'] / 100 * $settings['jasa_usaha']['persen'] / 100); ?></li>
               </ul>
             </li>
-            <li>Jasa Pengurus: <?php echo round($settings['jasa_pengurus']['persen']); ?>% = Rp <?php echo rupiah(100000000 * $settings['jasa_pengurus']['persen'] / 100); ?></li>
+            <li>Jasa Pengurus: <?php echo $settings['jasa_pengurus']['persen']; ?>% = Rp <?php echo rupiah(100000000 * $settings['jasa_pengurus']['persen'] / 100); ?></li>
           </ul>
         </div>
       </div>
@@ -162,14 +162,14 @@ document.querySelectorAll('.persen-utama').forEach(inp => {
   inp.addEventListener('input', () => {
     let total = 0;
     document.querySelectorAll('.persen-utama').forEach(i => total += parseFloat(i.value) || 0);
-    document.getElementById('totalUtama').textContent = Math.round(total);
+    document.getElementById('totalUtama').textContent = total.toFixed(2);
   });
 });
 document.querySelectorAll('.persen-anggota').forEach(inp => {
   inp.addEventListener('input', () => {
     let total = 0;
     document.querySelectorAll('.persen-anggota').forEach(i => total += parseFloat(i.value) || 0);
-    document.getElementById('totalAnggota').textContent = parseFloat(total.toFixed(2));
+    document.getElementById('totalAnggota').textContent = total.toFixed(2);
   });
 });
 </script>

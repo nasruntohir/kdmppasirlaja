@@ -3,6 +3,9 @@
 require_login();
 $conn = db();
 
+// Tandai notifikasi pembuka halaman sudah dibaca admin
+$conn->query("UPDATE ksp_pengajuan_online SET notified_admin = 1 WHERE status = 'pending' AND notified_admin = 0");
+
 // Handle actions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   csrf_check();
