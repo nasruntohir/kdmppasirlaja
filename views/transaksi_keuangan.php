@@ -254,7 +254,7 @@ $sum = $conn->query("
               <?php endforeach; ?>
             </select>
           </div>
-          <div class="mb-3"><label class="form-label">Nominal</label><input type="number" name="nominal" class="form-control" min="1" step="1000" required></div>
+          <div class="mb-3"><label class="form-label">Nominal (Rp)</label><input type="text" name="nominal_display" class="form-control rupiah-input" data-target="nominal" inputmode="numeric" autocomplete="off" required><input type="hidden" name="nominal"></div>
           <div class="mb-3"><label class="form-label">Keterangan</label><input name="keterangan" class="form-control" placeholder="Opsional"></div>
         </div>
         <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button class="btn btn-success">Simpan</button></div>
@@ -292,7 +292,7 @@ $sum = $conn->query("
               <?php endforeach; ?>
             </select>
           </div>
-          <div class="mb-3"><label class="form-label">Nominal</label><input type="number" name="nominal" class="form-control" min="1" step="1000" required></div>
+          <div class="mb-3"><label class="form-label">Nominal (Rp)</label><input type="text" name="nominal_display" class="form-control rupiah-input" data-target="nominal" inputmode="numeric" autocomplete="off" required><input type="hidden" name="nominal"></div>
           <div class="mb-3"><label class="form-label">Keterangan</label><input name="keterangan" class="form-control" placeholder="Opsional"></div>
         </div>
         <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button class="btn btn-danger">Simpan</button></div>
@@ -330,7 +330,7 @@ $sum = $conn->query("
               <?php endforeach; ?>
             </select>
           </div>
-          <div class="mb-3"><label class="form-label">Nominal</label><input type="number" name="nominal" class="form-control" min="1" step="1000" required></div>
+          <div class="mb-3"><label class="form-label">Nominal (Rp)</label><input type="text" name="nominal_display" class="form-control rupiah-input" data-target="nominal" inputmode="numeric" autocomplete="off" required><input type="hidden" name="nominal"></div>
           <div class="mb-3"><label class="form-label">Keterangan</label><input name="keterangan" class="form-control" placeholder="Opsional"></div>
         </div>
         <div class="modal-footer"><button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button><button class="btn btn-primary">Simpan</button></div>
