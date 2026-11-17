@@ -12,3 +12,5 @@ README.md
 /api/
 1.php
 index.php
+/config/app.php
+/config/db.php
